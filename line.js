@@ -40,7 +40,6 @@ const handleEvent = async (event) => {
       
           const textResponse = await openai.chatGPT(recognizedText);
           const audioResponsePath = await azureTTS.textToSpeech(textResponse);
-      
           const audioMessage = {
             type: "audio",
             originalContentUrl: audioResponsePath,
