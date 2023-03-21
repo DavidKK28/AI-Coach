@@ -17,7 +17,8 @@ const handleEvent = async (event) => {
   if (event.type === "message") {
     if (event.message.type === "text") {
       const textResponse = await openai.chatGPT(event.message.text);
-      const audioFilePath = await azureTTS.textToSpeech(textResponse);
+      const currentRole = openai.getCurrentRole(); // 获取当前聊天角色
+      const audioFilePath = await azureTTS.textToSpeech(textResponse, currentRole);
 
       const audioMessage = {
         type: "audio",
@@ -37,25 +38,26 @@ const handleEvent = async (event) => {
         try {
           const recognizedText = await azureSpeech.speechToText(audioFilePath);
           fs.unlinkSync(audioFilePath); // Remove temporary audio file
-      
+
           const textResponse = await openai.chatGPT(recognizedText);
-          const audioResponsePath = await azureTTS.textToSpeech(textResponse);
+          const currentRole = openai.getCurrentRole(); // 在这里获取当前聊天角色
+          const audioResponsePath = await azureTTS.textToSpeech(textResponse, currentRole);
           const audioMessage = {
             type: "audio",
             originalContentUrl: audioResponsePath,
             duration: 60000
           };
-      
+
           return client.replyMessage(event.replyToken, audioMessage);
         } catch (error) {
           console.error("Error processing audio:", error);
         }
       });
-      
+
       writeStream.on("error", (error) => {
         console.error("Error writing audio file:", error);
       });
-      
+
     }
   }
 
