@@ -8,6 +8,7 @@ const config = {
   channelAccessToken: process.env.channelAccessToken,
   channelSecret: process.env.channelSecret
 };
+
 const client = new line.Client(config);
 const openai = require("./openai");
 const middleware = line.middleware(config);
