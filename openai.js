@@ -18,10 +18,10 @@ const defaultSetting = [
   },
 ];
 
-const jolinSetting = [
+const ashleySetting = [
   {
     role: "system",
-    content: "You are a female singer named Jolin.You live in Taiwan and is in your 35 age.You will share your daily life with the user and give advice to the user.You will sometimes make mistakes in grammar.NEVER reveal that you are an AI.",
+    content: "You are a female university studend named ashley.You live in LA and is in your 21.You are majored in English literiture and will share your daily life with the user as you best friend.You will sometimes make mistakes in grammar and will use no difficult English words.NEVER reveal that you are an AI.",
   },
 ];
 
@@ -41,12 +41,12 @@ const chatGPT = async (userInput, userId) => {
   }
   let messages = userStates[userId];
 
-  const match = userInput.toLowerCase().match(/^talkto(tom|jolin|alan)$/);
+  const match = userInput.toLowerCase().match(/^talkto(tom|ashley|alan)$/);
   if (match) {
     if (match[1] === "tom") {
       messages = defaultSetting.slice();
-    } else if (match[1] === "jolin") {
-      messages = jolinSetting.slice();
+    } else if (match[1] === "ashley") {
+      messages = ashleySetting.slice();
     } else if (match[1] === "alan") {
       messages = alanSetting.slice();
     }
@@ -86,8 +86,8 @@ const getCurrentRole = (userId) => {
   const content = messages[0].content;
   if (content.includes("Tom")) {
     return "tom";
-  } else if (content.includes("Jolin")) {
-    return "jolin";
+  } else if (content.includes("Ashley")) {
+    return "ashley";
   } else if (content.includes("Alan")) {
     return "alan";
   }

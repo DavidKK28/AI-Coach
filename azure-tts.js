@@ -20,7 +20,7 @@ const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountK
 const blobServiceClient = new BlobServiceClient(`https://${accountName}.blob.core.windows.net`, sharedKeyCredential);
 
 const textToSpeech = async (text, role) => {
-  const voice = role === 'tom' ? 'en-GB-NoahNeural' : (role === 'jolin' ? 'en-US-JaneNeural' : 'en-IN-PrabhatNeural');
+  const voice = role === 'tom' ? 'en-US-EricNeural' : (role === 'ashley' ? 'en-US-AshleyNeural' : 'en-IN-PrabhatNeural');
   return new Promise(async (resolve, reject) => {
       const speechConfig = SpeechConfig.fromSubscription(subscriptionKey, serviceRegion);
       speechConfig.speechSynthesisVoiceName = voice;
