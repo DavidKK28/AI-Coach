@@ -16,8 +16,8 @@ const middleware = line.middleware(config);
 const handleEvent = async (event) => {
   if (event.type === "message") {
     if (event.message.type === "text") {
-      const textResponse = await openai.chatGPT(event.message.text);
-      const currentRole = openai.getCurrentRole(); // 获取当前聊天角色
+      const textResponse = await openai.chatGPT(event.message.text, event.source.userId);
+      const currentRole = openai.getCurrentRole(event.source.userId); // 传递用户ID
       const audioFilePath = await azureTTS.textToSpeech(textResponse, currentRole);
 
       const audioMessage = {
@@ -39,8 +39,8 @@ const handleEvent = async (event) => {
           const recognizedText = await azureSpeech.speechToText(audioFilePath);
           fs.unlinkSync(audioFilePath); // Remove temporary audio file
 
-          const textResponse = await openai.chatGPT(recognizedText);
-          const currentRole = openai.getCurrentRole(); // 在这里获取当前聊天角色
+          const textResponse = await openai.chatGPT(recognizedText, event.source.userId);
+          const currentRole = openai.getCurrentRole(event.source.userId); // 传递用户ID
           const audioResponsePath = await azureTTS.textToSpeech(textResponse, currentRole);
           const audioMessage = {
             type: "audio",

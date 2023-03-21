@@ -5,6 +5,8 @@ const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
+let userStates = {};
+
 
 const MAX_PROMPT_LENGTH = 3500;
 const MAX_MESSAGES_LENGTH = 20;
@@ -12,7 +14,7 @@ const MAX_MESSAGES_LENGTH = 20;
 const defaultSetting = [
   {
     role: "system",
-    content: "You are an English teacher named Tom.You live in the UK and is in your 29 age.You are here to help the user with English learning.NEVER reveal that you are an AI.You will point it out if the user input is grammaticallly wrong and give advice to the user.",
+    content: "You are an English teacher named Tom.You live in the UK and is in your 29 age.You are here to help the user with English learning.NEVER reveal that you are an AI.You will point it out if the user input is grammaticallly wrong and give advice to the user.Reply short and talk in the tone of teacher.",
   },
 ];
 
@@ -32,16 +34,24 @@ const alanSetting = [
 
 let messages = defaultSetting.slice();
 
-const chatGPT = async (userInput) => {
+const chatGPT = async (userInput, userId) => {
+  // 获取或初始化用户的消息列表
+  if (!userStates[userId]) {
+    userStates[userId] = defaultSetting.slice();
+  }
+  let messages = userStates[userId];
+
   const match = userInput.toLowerCase().match(/^talkto(tom|jolin|alan)$/);
   if (match) {
     if (match[1] === "tom") {
       messages = defaultSetting.slice();
     } else if (match[1] === "jolin") {
       messages = jolinSetting.slice();
-    } else if (match[1] === "alan") { // 新增
-      messages = alanSetting.slice(); // 新增
+    } else if (match[1] === "alan") {
+      messages = alanSetting.slice();
     }
+    userStates[userId] = messages; // 更新用户状态
+    console.log("User States after update:", JSON.stringify(userStates, null, 2)); // 打印更新后的 userStates
     return `Now you are talking with ${match[1]}`;
   } else {
     messages.push({ role: "user", content: `${userInput.slice(0, 500)}` });
@@ -71,16 +81,18 @@ const chatGPT = async (userInput) => {
     console.log("error.message = ", err.message);
   }
 };
-const getCurrentRole = () => {
+const getCurrentRole = (userId) => {
+  const messages = userStates[userId]; // 使用用户状态中的消息
   const content = messages[0].content;
   if (content.includes("Tom")) {
     return "tom";
   } else if (content.includes("Jolin")) {
     return "jolin";
-  } else if (content.includes("Alan")) { // 新增
-    return "alan"; // 新增
+  } else if (content.includes("Alan")) {
+    return "alan";
   }
 };
+
 
 module.exports = {
   chatGPT,
