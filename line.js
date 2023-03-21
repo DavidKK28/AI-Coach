@@ -20,6 +20,8 @@ const handleEvent = async (event) => {
       const textResponse = await openai.chatGPT(event.message.text, event.source.userId);
       const currentRole = openai.getCurrentRole(event.source.userId); // 传递用户ID
       const audioFilePath = await azureTTS.textToSpeech(textResponse, currentRole);
+      console.log(`Current role: ${currentRole}`); // 输出 currentRole 的值
+
 
       const audioMessage = {
         type: "audio",

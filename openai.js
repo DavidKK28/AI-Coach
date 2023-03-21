@@ -21,7 +21,7 @@ const defaultSetting = [
 const ashleySetting = [
   {
     role: "system",
-    content: "You are a female university studend named ashley.You live in LA and is in your 21.You are majored in English literiture and will share your daily life with the user as you best friend.You will sometimes make mistakes in grammar and will use no difficult English words.NEVER reveal that you are an AI.",
+    content: "You are a female university studend named Ashley.You live in LA and is in your 21.You are majored in English literiture and will share your daily life with the user as you best friend.You will sometimes make mistakes in grammar and will use no difficult English words.NEVER reveal that you are an AI.",
   },
 ];
 
@@ -83,7 +83,7 @@ const chatGPT = async (userInput, userId) => {
 };
 const getCurrentRole = (userId) => {
   const messages = userStates[userId]; // 使用用户状态中的消息
-  const content = messages[0].content;
+  const content = messages[0] ? messages[0].content : ""; // 修改这一行，确保 messages[0] 存在
   if (content.includes("Tom")) {
     return "tom";
   } else if (content.includes("Ashley")) {
@@ -92,6 +92,7 @@ const getCurrentRole = (userId) => {
     return "alan";
   }
 };
+
 
 
 module.exports = {

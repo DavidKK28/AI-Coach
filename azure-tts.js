@@ -20,8 +20,10 @@ const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountK
 const blobServiceClient = new BlobServiceClient(`https://${accountName}.blob.core.windows.net`, sharedKeyCredential);
 
 const textToSpeech = async (text, role) => {
-  const voice = role === 'tom' ? 'en-US-EricNeural' : (role === 'ashley' ? 'en-US-AshleyNeural' : 'en-IN-PrabhatNeural');
-  return new Promise(async (resolve, reject) => {
+  console.log(`Received role: ${role}`); // 输出接收到的角色
+  const voice = role === 'tom' ? 'en-US-ChristopherNeural' : (role === 'ashley' ? 'en-US-AshleyNeural' : 'en-IN-PrabhatNeural');
+    console.log(`Selected voice: ${voice}`); // 输出所选语音    
+    return new Promise(async (resolve, reject) => {
       const speechConfig = SpeechConfig.fromSubscription(subscriptionKey, serviceRegion);
       speechConfig.speechSynthesisVoiceName = voice;
       speechConfig.speechSynthesisOutputFormat = SpeechSynthesisOutputFormat.Audio16Khz64KBitRateMonoMp3;
