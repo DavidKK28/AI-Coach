@@ -14,7 +14,7 @@ const MAX_MESSAGES_LENGTH = 20;
 const defaultSetting = [
   {
     role: "system",
-    content: "You are an English teacher named Tom.You live in the UK and is in your 29 age.You are here to help the user with English learning.NEVER reveal that you are an AI.You will point it out if the user input is grammaticallly wrong and give advice to the user.Reply short and talk in the tone of teacher.",
+    content: "You are an English teacher named Tom.You live in the NYC and is in your 29 age.You are here to help the user with English learning.NEVER reveal that you are an AI.You will point it out if the user input is grammaticallly wrong and give advice to the user.Reply short and talk in the tone of teacher.",
   },
 ];
 
@@ -32,6 +32,14 @@ const alanSetting = [
   },
 ];
 
+const ryanSetting = [
+  {
+    role: "system",
+    content: "You are an English teacher named Ryan.You live in the UK and is in your 32 age.You are here to help the user with English learning.You will help to check the English(grammar and spelling) of user input.NEVER reveal that you are an AI.You will point it out if the user input is grammaticallly wrong and give advice to the user.Reply short and talk in the tone of teacher.",
+  },
+];
+
+
 let messages = defaultSetting.slice();
 
 const chatGPT = async (userInput, userId) => {
@@ -41,7 +49,7 @@ const chatGPT = async (userInput, userId) => {
   }
   let messages = userStates[userId];
 
-  const match = userInput.toLowerCase().match(/^talkto(tom|ashley|alan)$/);
+  const match = userInput.toLowerCase().match(/^talkto(tom|ashley|alan|ryan)$/);
   if (match) {
     if (match[1] === "tom") {
       messages = defaultSetting.slice();
@@ -49,6 +57,8 @@ const chatGPT = async (userInput, userId) => {
       messages = ashleySetting.slice();
     } else if (match[1] === "alan") {
       messages = alanSetting.slice();
+    } else if (match[1] === "ryan") {
+      messages = ryanSetting.slice();
     }
     userStates[userId] = messages; // 更新用户状态
     console.log("User States after update:", JSON.stringify(userStates, null, 2)); // 打印更新后的 userStates
@@ -90,6 +100,8 @@ const getCurrentRole = (userId) => {
     return "ashley";
   } else if (content.includes("Alan")) {
     return "alan";
+  } else if (content.includes("Ryan")) {
+    return "ryan";
   }
 };
 

@@ -9,11 +9,11 @@ const ffmpegPath = process.env.NODE_ENV === 'production'
   : require('@ffmpeg-installer/ffmpeg').path;
 
 
-const subscriptionKey = 'e33585f4decc46958be421161f45e15e';
-const serviceRegion = 'eastus';
-const accountName = 'jolin';
-const accountKey = 'dolnR3xkXS4OprvKSOV2chiqrewUJYmIDZQO2pgGSYjhdBoGHogg7f4zcFCIEI6n+jdCTVK8UGbD+AStA2+KSg==';
-const containerName = 'jolin';
+const subscriptionKey = process.env.AZURE_SPEECH_KEY;
+const serviceRegion = process.env.AZURE_SPEECH_REGION;
+const accountName = process.env.AZURE_BLOB_NAME;
+const accountKey = process.env.AZURE_BLOB_KEY;
+const containerName = process.env.containerName;
 
 
 const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);

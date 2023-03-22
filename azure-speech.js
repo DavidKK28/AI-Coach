@@ -9,8 +9,8 @@ const ffmpegPath = process.env.NODE_ENV === 'production'
   : require('@ffmpeg-installer/ffmpeg').path;
 
 
-const subscriptionKey = "e33585f4decc46958be421161f45e15e";
-const serviceRegion = "eastus";
+const subscriptionKey = process.env.AZURE_SPEECH_KEY;
+const serviceRegion = process.env.AZURE_SPEECH_REGION;
 
 const convertToWav = async (inputFilePath) => {
     if (!fs.existsSync(inputFilePath)) {
