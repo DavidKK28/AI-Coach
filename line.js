@@ -20,7 +20,7 @@ const handleEvent = async (event) => {
       const textResponse = await openai.chatGPT(event.message.text, event.source.userId);
       const currentRole = openai.getCurrentRole(event.source.userId); // 传递用户ID
 
-      if (currentRole === "ryan") {
+      if (currentRole === "daichi") {
         const textMessage = {
           type: "text",
           text: textResponse
@@ -51,7 +51,7 @@ const handleEvent = async (event) => {
           const textResponse = await openai.chatGPT(recognizedText, event.source.userId);
           const currentRole = openai.getCurrentRole(event.source.userId); // 传递用户ID
 
-          if (currentRole === "ryan") {
+          if (currentRole === "daichi") {
             const textMessage = {
               type: "text",
               text: textResponse

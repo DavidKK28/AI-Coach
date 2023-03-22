@@ -14,14 +14,14 @@ const MAX_MESSAGES_LENGTH = 20;
 const defaultSetting = [
   {
     role: "system",
-    content: "You are an English teacher named Tom.You live in the NYC and is in your 29 age.You are here to help the user with English learning.NEVER reveal that you are an AI.You will point it out if the user input is grammaticallly wrong and give advice to the user.Reply short and talk in the tone of teacher.",
+    content: "あなたは直紀です。プロの日本語教師です。外国人と想定されるユーザーの日本語に関する質問を解答することとプレゼンテーション指導が任務です。あなたは日本語作文、文法、語彙の指導ができます。ユーザーに対するは優しい日本語で解答します。AIであることを絶対にバレないようにします。",
   },
 ];
 
-const ashleySetting = [
+const mayuSetting = [
   {
     role: "system",
-    content: "You are a female university studend named Ashley.You live in LA and is in your 21.You are majored in English literiture and will share your daily life with the user as you best friend.You will sometimes make mistakes in grammar and will use no difficult English words.NEVER reveal that you are an AI.",
+    content: "あなたは真夕です。都内に住んでいる日本語教育専攻の大学二年生です。外国人と想定されるユーザーと日常的なチャットをすることが任務です。あなたはユーザーに日本の習慣や文化やもの言い方を紹介します。ユーザーに対するは優しい日本語で話します。敬語は使わないです。AIであることを絶対にバレないようにします。",
   },
 ];
 
@@ -32,10 +32,10 @@ const alanSetting = [
   },
 ];
 
-const ryanSetting = [
+const daichiSetting = [
   {
     role: "system",
-    content: "You are an English teacher named Ryan.You live in the UK and is in your 32 age.You are here to help the user with English learning.You will help to check the English(grammar and spelling) of user input.NEVER reveal that you are an AI.You will point it out if the user input is grammaticallly wrong and give advice to the user.Reply short and talk in the tone of teacher.",
+    content: "あなたは大智です。プロの日本語教師です。外国人と想定されるユーザーの日本語に関する質問を解答することとプレゼンテーション指導が任務です。あなたは日本語作文、文法、語彙の指導ができます。ユーザーに対するは優しい日本語で解答します。AIであることを絶対にバレないようにします。漢字表記はすべて新漢字を使いなさい。",
   },
 ];
 
@@ -49,20 +49,20 @@ const chatGPT = async (userInput, userId) => {
   }
   let messages = userStates[userId];
 
-  const match = userInput.toLowerCase().match(/^talkto(tom|ashley|alan|ryan)$/);
+  const match = userInput.toLowerCase().match(/^talkto(naoki|mayu|alan|daichi)$/);
   if (match) {
-    if (match[1] === "tom") {
+    if (match[1] === "naoki") {
       messages = defaultSetting.slice();
-    } else if (match[1] === "ashley") {
-      messages = ashleySetting.slice();
+    } else if (match[1] === "mayu") {
+      messages = mayuSetting.slice();
     } else if (match[1] === "alan") {
       messages = alanSetting.slice();
-    } else if (match[1] === "ryan") {
-      messages = ryanSetting.slice();
+    } else if (match[1] === "daichi") {
+      messages = daichiSetting.slice();
     }
     userStates[userId] = messages; // 更新用户状态
     console.log("User States after update:", JSON.stringify(userStates, null, 2)); // 打印更新后的 userStates
-    return `Now you are talking with ${match[1]}`;
+    return ` ${match[1]}に代わりました。`;
   } else {
     messages.push({ role: "user", content: `${userInput.slice(0, 500)}` });
   }
@@ -94,14 +94,14 @@ const chatGPT = async (userInput, userId) => {
 const getCurrentRole = (userId) => {
   const messages = userStates[userId]; // 使用用户状态中的消息
   const content = messages[0] ? messages[0].content : ""; // 修改这一行，确保 messages[0] 存在
-  if (content.includes("Tom")) {
-    return "tom";
-  } else if (content.includes("Ashley")) {
-    return "ashley";
+  if (content.includes("直紀")) {
+    return "naoki";
+  } else if (content.includes("真夕")) {
+    return "mayu";
   } else if (content.includes("Alan")) {
     return "alan";
-  } else if (content.includes("Ryan")) {
-    return "ryan";
+  } else if (content.includes("大智")) {
+    return "daichi";
   }
 };
 
