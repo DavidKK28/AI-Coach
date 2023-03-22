@@ -10,3 +10,5 @@ node_modules
 *.gz
 ngrok.exe
 aptfile
+*.mp3
+*.m4a

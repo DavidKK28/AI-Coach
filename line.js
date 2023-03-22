@@ -18,7 +18,8 @@ const handleEvent = async (event) => {
   if (event.type === "message") {
     if (event.message.type === "text") {
       const textResponse = await openai.chatGPT(event.message.text, event.source.userId);
-      const currentRole = openai.getCurrentRole(event.source.userId); // 传递用户ID
+      const currentRole = openai.getCurrentRole(event.source.userId);
+      const transcriptStatus = openai.getTranscriptStatus(event.source.userId);
 
       if (currentRole === "ryan") {
         const textMessage = {
@@ -28,16 +29,25 @@ const handleEvent = async (event) => {
         return client.replyMessage(event.replyToken, textMessage);
       } else {
         const audioFilePath = await azureTTS.textToSpeech(textResponse, currentRole);
-        console.log(`Current role: ${currentRole}`); // 输出 currentRole 的值
+        console.log(`Current role: ${currentRole}`);
+
         const audioMessage = {
           type: "audio",
           originalContentUrl: audioFilePath,
           duration: 60000
         };
-        return client.replyMessage(event.replyToken, audioMessage);
+
+        if (transcriptStatus) {
+          const textMessage = {
+            type: "text",
+            text: textResponse
+          };
+          return client.replyMessage(event.replyToken, [audioMessage, textMessage]);
+        } else {
+          return client.replyMessage(event.replyToken, audioMessage);
+        }
       }
     } else if (event.message.type === "audio") {
-      // Download audio file from LINE server
       const audioStream = await client.getMessageContent(event.message.id);
       const audioFilePath = path.join(__dirname, "tempAudio.wav");
       const writeStream = fs.createWriteStream(audioFilePath);
@@ -46,10 +56,11 @@ const handleEvent = async (event) => {
       writeStream.on("finish", async () => {
         try {
           const recognizedText = await azureSpeech.speechToText(audioFilePath);
-          fs.unlinkSync(audioFilePath); // Remove temporary audio file
+          fs.unlinkSync(audioFilePath);
 
           const textResponse = await openai.chatGPT(recognizedText, event.source.userId);
-          const currentRole = openai.getCurrentRole(event.source.userId); // 传递用户ID
+          const currentRole = openai.getCurrentRole(event.source.userId);
+          const transcriptStatus = openai.getTranscriptStatus(event.source.userId);
 
           if (currentRole === "ryan") {
             const textMessage = {
@@ -64,7 +75,16 @@ const handleEvent = async (event) => {
               originalContentUrl: audioResponsePath,
               duration: 60000
             };
-            return client.replyMessage(event.replyToken, audioMessage);
+
+            if (transcriptStatus) {
+              const textMessage = {
+                type: "text",
+                text: textResponse
+              };
+              return client.replyMessage(event.replyToken, [audioMessage, textMessage]);
+            } else {
+              return client.replyMessage(event.replyToken, audioMessage);
+            }
           }
         } catch (error) {
           console.error("Error processing audio:", error);

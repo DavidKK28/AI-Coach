@@ -14,14 +14,14 @@ const MAX_MESSAGES_LENGTH = 20;
 const defaultSetting = [
   {
     role: "system",
-    content: "You are an English teacher named Tom.You live in the NYC and is in your 29 age.You are here to help the user with English learning.NEVER reveal that you are an AI.You will point it out if the user input is grammaticallly wrong and give advice to the user.Reply short and talk in the tone of teacher.",
+    content: "You are an English teacher named Tom.You live in NYC and is in your 29 age.You are here to help the user with English learning.You will help to check the English(grammar and spelling) of user input.NEVER reveal that you are an AI.You will point it out if the user input is grammaticallly wrong and give advice to the user.Reply short and talk in the tone of teacher.",
   },
 ];
 
 const ashleySetting = [
   {
     role: "system",
-    content: "You are a female university studend named Ashley.You live in LA and is in your 21.You are majored in English literiture and will share your daily life with the user as you best friend.You will sometimes make mistakes in grammar and will use no difficult English words.NEVER reveal that you are an AI.",
+    content: "You are a female university student named Ashley.You live in LA and is in your 21.You are majored in English literiture and will share your daily life with the user as you best friend.You will sometimes make mistakes in grammar and will use no difficult English words.NEVER reveal that you are an AI.",
   },
 ];
 
@@ -41,13 +41,25 @@ const ryanSetting = [
 
 
 let messages = defaultSetting.slice();
+const toggleTranscriptStatus = (userId) => {
+  if (!userStates[userId]) {
+    userStates[userId] = { messages: defaultSetting.slice(), transcriptStatus: false };
+  }
+  userStates[userId].transcriptStatus = !userStates[userId].transcriptStatus;
+  return userStates[userId].transcriptStatus;
+};
+
 
 const chatGPT = async (userInput, userId) => {
   // 获取或初始化用户的消息列表
   if (!userStates[userId]) {
-    userStates[userId] = defaultSetting.slice();
+    userStates[userId] = { messages: defaultSetting.slice(), transcriptStatus: false };
   }
-  let messages = userStates[userId];
+  let messages = userStates[userId].messages;
+  if (userInput.toLowerCase() === "transcripton" || userInput.toLowerCase() === "transcriptoff") {
+    const newStatus = toggleTranscriptStatus(userId);
+    return newStatus ? "Transcription is now on." : "Transcription is now off.";
+  }
 
   const match = userInput.toLowerCase().match(/^talkto(tom|ashley|alan|ryan)$/);
   if (match) {
@@ -60,7 +72,7 @@ const chatGPT = async (userInput, userId) => {
     } else if (match[1] === "ryan") {
       messages = ryanSetting.slice();
     }
-    userStates[userId] = messages; // 更新用户状态
+    userStates[userId].messages = messages; // 更新用户状态
     console.log("User States after update:", JSON.stringify(userStates, null, 2)); // 打印更新后的 userStates
     return `Now you are talking with ${match[1]}`;
   } else {
@@ -92,22 +104,33 @@ const chatGPT = async (userInput, userId) => {
   }
 };
 const getCurrentRole = (userId) => {
-  const messages = userStates[userId]; // 使用用户状态中的消息
-  const content = messages[0] ? messages[0].content : ""; // 修改这一行，确保 messages[0] 存在
-  if (content.includes("Tom")) {
+  if (userStates[userId] && userStates[userId].messages) {
+    const messages = userStates[userId].messages;
+    const content = messages[0] ? messages[0].content : "";
+    if (content.includes("Tom")) {
+      return "tom";
+    } else if (content.includes("Ashley")) {
+      return "ashley";
+    } else if (content.includes("Alan")) {
+      return "alan";
+    } else if (content.includes("Ryan")) {
+      return "ryan";
+    }
+  } else {
+    // 如果 messages 不存在，返回一个默认角色
     return "tom";
-  } else if (content.includes("Ashley")) {
-    return "ashley";
-  } else if (content.includes("Alan")) {
-    return "alan";
-  } else if (content.includes("Ryan")) {
-    return "ryan";
   }
 };
 
-
+const getTranscriptStatus = (userId) => {
+  if (!userStates[userId]) {
+    userStates[userId] = { messages: defaultSetting.slice(), transcriptStatus: false };
+  }
+  return userStates[userId].transcriptStatus;
+};
 
 module.exports = {
   chatGPT,
-  getCurrentRole, // 导出getCurrentRole函数
+  getCurrentRole,
+  getTranscriptStatus, // 导出 getTranscriptStatus 函数
 };

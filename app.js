@@ -19,6 +19,6 @@ app.post('/webhook', line.middleware, async (req, res) => {
   }
 })
 
-app.listen((PORT), () => {
-  console.log('App is running on http://localhost:3000')
-})
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
