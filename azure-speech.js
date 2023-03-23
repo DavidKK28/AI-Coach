@@ -33,6 +33,7 @@ const convertToWav = async (inputFilePath) => {
         const wavFilePath = await convertToWav(audioFilePath);
         const audioData = fs.readFileSync(wavFilePath);
         const speechConfig = SpeechConfig.fromSubscription(subscriptionKey, serviceRegion);
+        speechConfig.speechRecognitionLanguage = 'zh-CN';
         const audioStream = AudioInputStream.createPushStream();
         audioStream.write(Buffer.from(audioData));
         audioStream.close();
