@@ -5,8 +5,8 @@ const fs = require("fs");
 const path = require("path");
 const line = require("@line/bot-sdk");
 const config = {
-  channelAccessToken: process.env.channelAccessToken,
-  channelSecret: process.env.channelSecret
+  channelAccessTokenyun: process.env.channelAccessTokenyun,
+  channelSecretyun: process.env.channelSecretyun
 };
 
 const client = new line.Client(config);
