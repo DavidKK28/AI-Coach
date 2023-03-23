@@ -6,7 +6,7 @@ name: Build and deploy Node.js app to Azure Web App - jolinbot
 on:
   push:
     branches:
-      - suica
+      - main
   workflow_dispatch:
 
 jobs:
