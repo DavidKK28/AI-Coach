@@ -86,7 +86,7 @@ const chatGPT = async (userInput, userId) => {
 
   try {
     const completion = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
+      model: process.env.model,
       messages: messages,
       max_tokens: 500,
     });
